@@ -30,3 +30,24 @@ router.delete("/:id", async (req, res) => {
 });
 
 export default router;
+
+// DASHBOARD STATS
+router.get("/dashboard/stats", async (req, res) => {
+  const leads = await Lead.find();
+
+  const stats = {
+    totalLeads: leads.length,
+    newLeads: leads.filter(l => l.status === "New").length,
+    qualifiedLeads: leads.filter(l => l.status === "Qualified").length,
+    wonLeads: leads.filter(l => l.status === "Won").length,
+    lostLeads: leads.filter(l => l.status === "Lost").length,
+
+    totalDealValue: leads.reduce((sum, l) => sum + (l.dealValue || 0), 0),
+
+    wonDealValue: leads
+      .filter(l => l.status === "Won")
+      .reduce((sum, l) => sum + (l.dealValue || 0), 0)
+  };
+
+  res.json(stats);
+});
