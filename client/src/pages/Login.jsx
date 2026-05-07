@@ -1,9 +1,11 @@
 import { useState } from "react";
 import API from "../services/api";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -16,6 +18,7 @@ export default function Login() {
 
       localStorage.setItem("token", res.data.token);
       alert("Login successful!");
+      navigate("/app");
     } catch (err) {
       alert("Login failed");
     }
