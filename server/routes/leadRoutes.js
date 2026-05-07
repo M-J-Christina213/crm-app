@@ -1,5 +1,6 @@
 import express from "express";
 import Lead from "../models/Lead.js";
+import Note from "../models/Note.js";
 
 const router = express.Router();
 
@@ -20,7 +21,7 @@ router.get("/", async (req, res) => {
   if (source) filter.source = source;
   if (assignedTo) filter.assignedTo = assignedTo;
 
-  // search (name, company, email)
+  
   if (search) {
     filter.$or = [
       { name: { $regex: search, $options: "i" } },
@@ -68,4 +69,20 @@ router.get("/dashboard/stats", async (req, res) => {
   };
 
   res.json(stats);
+});
+
+// ADD NOTE to lead
+router.post("/:id/notes", async (req, res) => {
+  const note = await Note.create({
+    leadId: req.params.id,
+    content: req.body.content,
+    createdBy: "admin"
+  });
+
+  res.json(note);
+});
+
+router.get("/:id/notes", async (req, res) => {
+  const notes = await Note.find({ leadId: req.params.id }).sort({ createdAt: -1 });
+  res.json(notes);
 });
