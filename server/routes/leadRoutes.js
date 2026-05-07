@@ -11,7 +11,25 @@ router.post("/", async (req, res) => {
 
 // GET all leads
 router.get("/", async (req, res) => {
-  const leads = await Lead.find();
+  const { status, source, assignedTo, search } = req.query;
+
+  let filter = {};
+
+  // filters
+  if (status) filter.status = status;
+  if (source) filter.source = source;
+  if (assignedTo) filter.assignedTo = assignedTo;
+
+  // search (name, company, email)
+  if (search) {
+    filter.$or = [
+      { name: { $regex: search, $options: "i" } },
+      { company: { $regex: search, $options: "i" } },
+      { email: { $regex: search, $options: "i" } }
+    ];
+  }
+
+  const leads = await Lead.find(filter);
   res.json(leads);
 });
 
