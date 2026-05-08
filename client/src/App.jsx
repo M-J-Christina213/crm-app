@@ -1,14 +1,18 @@
-import { useEffect } from "react";
-import API from "./services/api";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import Leads from "./pages/Leads";
 
 function App() {
-  useEffect(() => {
-    API.get("/leads").then(res => {
-      console.log(res.data);
-    });
-  }, []);
-
-  return <h1>CRM Frontend Running</h1>;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/leads" element={<Leads />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;

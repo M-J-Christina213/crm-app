@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import API from "../services/api";
+import { Link } from "react-router-dom";
 
 export default function Dashboard() {
   const [data, setData] = useState(null);
@@ -18,6 +19,10 @@ export default function Dashboard() {
   return (
     <div style={{ padding: 20 }}>
       <h1>CRM Dashboard</h1>
+
+        <Link to="/leads">
+            <button>Go To Leads</button>
+        </Link>
 
       <div>
         <p>Total Leads: {data.totalLeads}</p>
