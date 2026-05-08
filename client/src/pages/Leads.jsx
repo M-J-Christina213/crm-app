@@ -50,6 +50,11 @@ function Leads() {
     });
   };
 
+  const deleteLead = async (id) => {
+  await API.delete(`/leads/${id}`);
+  fetchLeads();
+};
+
   return (
     <div style={{ padding: "20px" }}>
       <h1>Leads</h1>
@@ -159,6 +164,9 @@ function Leads() {
           <p>Email: {lead.email}</p>
           <p>Status: {lead.status}</p>
           <p>Value: ${lead.dealValue}</p>
+          <button onClick={() => deleteLead(lead._id)}>
+            Delete
+          </button>
         </div>
       ))}
     </div>
