@@ -3,6 +3,7 @@ import API from "../services/api";
 
 function Leads() {
   const [leads, setLeads] = useState([]);
+  const [statusFilter, setStatusFilter] = useState("");
 
   const [formData, setFormData] = useState({
     name: "",
@@ -17,10 +18,10 @@ function Leads() {
 
   useEffect(() => {
     fetchLeads();
-  }, []);
+  }, [statusFilter]);
 
   const fetchLeads = async () => {
-    const res = await API.get("/leads");
+    const res = await API.get(`/leads?status=${statusFilter}`);
     setLeads(res.data);
   };
 
@@ -58,6 +59,20 @@ function Leads() {
   return (
     <div style={{ padding: "20px" }}>
       <h1>Leads</h1>
+      <select
+        value={statusFilter}
+        onChange={(e) => setStatusFilter(e.target.value)}
+        >
+        <option value="">All</option>
+        <option value="New">New</option>
+        <option value="Contacted">Contacted</option>
+        <option value="Qualified">Qualified</option>
+        <option value="Proposal Sent">Proposal Sent</option>
+        <option value="Won">Won</option>
+        <option value="Lost">Lost</option>
+        </select>
+
+        <br /><br />
 
       <form onSubmit={createLead}>
         <input
