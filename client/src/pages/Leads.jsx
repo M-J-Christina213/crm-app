@@ -4,6 +4,7 @@ import API from "../services/api";
 function Leads() {
   const [leads, setLeads] = useState([]);
   const [statusFilter, setStatusFilter] = useState("");
+  const [editingLead, setEditingLead] = useState(null);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -54,6 +55,26 @@ function Leads() {
   const deleteLead = async (id) => {
   await API.delete(`/leads/${id}`);
   fetchLeads();
+};
+
+const startEdit = (lead) => {
+  setEditingLead(lead);
+};
+
+const updateLead = async (e) => {
+  e.preventDefault();
+
+  await API.put(`/leads/${editingLead._id}`, editingLead);
+
+  setEditingLead(null);
+  fetchLeads();
+};
+
+const handleEditChange = (e) => {
+  setEditingLead({
+    ...editingLead,
+    [e.target.name]: e.target.value,
+  });
 };
 
   return (
@@ -165,6 +186,45 @@ function Leads() {
 
       <hr />
 
+      {editingLead && (
+        <form onSubmit={updateLead}>
+            <h2>Edit Lead</h2>
+
+            <input
+            name="name"
+            value={editingLead.name}
+            onChange={handleEditChange}
+            />
+
+            <input
+            name="company"
+            value={editingLead.company}
+            onChange={handleEditChange}
+            />
+
+            <input
+            name="email"
+            value={editingLead.email}
+            onChange={handleEditChange}
+            />
+
+            <input
+            name="phone"
+            value={editingLead.phone}
+            onChange={handleEditChange}
+            />
+
+            <input
+            name="dealValue"
+            value={editingLead.dealValue}
+            onChange={handleEditChange}
+            />
+
+            <button type="submit">Update</button>
+            <button onClick={() => setEditingLead(null)}>Cancel</button>
+        </form>
+        )}
+
       {leads.map((lead) => (
         <div
           key={lead._id}
@@ -182,6 +242,9 @@ function Leads() {
           <button onClick={() => deleteLead(lead._id)}>
             Delete
           </button>
+          <button onClick={() => startEdit(lead)}>
+            Edit
+            </button>
         </div>
       ))}
     </div>
