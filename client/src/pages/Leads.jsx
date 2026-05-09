@@ -5,10 +5,14 @@ function Leads() {
   const [leads, setLeads] = useState([]);
   const [statusFilter, setStatusFilter] = useState("");
   const [editingLead, setEditingLead] = useState(null);
+
+  // NOTES
   const [notes, setNotes] = useState([]);
   const [noteText, setNoteText] = useState("");
   const [selectedLead, setSelectedLead] = useState(null);
+  const [selectedLeadData, setSelectedLeadData] = useState(null);
 
+  // CREATE FORM
   const [formData, setFormData] = useState({
     name: "",
     company: "",
@@ -20,15 +24,21 @@ function Leads() {
     dealValue: "",
   });
 
+  // FETCH LEADS
   useEffect(() => {
     fetchLeads();
   }, [statusFilter]);
 
   const fetchLeads = async () => {
-    const res = await API.get(`/leads?status=${statusFilter}`);
-    setLeads(res.data);
+    try {
+      const res = await API.get(`/leads?status=${statusFilter}`);
+      setLeads(res.data);
+    } catch (err) {
+      console.error("Error fetching leads:", err);
+    }
   };
 
+  // CREATE LEAD
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -39,71 +49,112 @@ function Leads() {
   const createLead = async (e) => {
     e.preventDefault();
 
-    await API.post("/leads", formData);
+    try {
+      await API.post("/leads", formData);
 
-    fetchLeads();
+      setFormData({
+        name: "",
+        company: "",
+        email: "",
+        phone: "",
+        source: "",
+        assignedTo: "",
+        status: "New",
+        dealValue: "",
+      });
 
-    setFormData({
-      name: "",
-      company: "",
-      email: "",
-      phone: "",
-      source: "",
-      assignedTo: "",
-      status: "New",
-      dealValue: "",
+      fetchLeads();
+    } catch (err) {
+      console.error("Error creating lead:", err);
+    }
+  };
+
+  // DELETE LEAD
+  const deleteLead = async (id) => {
+    try {
+      await API.delete(`/leads/${id}`);
+      fetchLeads();
+    } catch (err) {
+      console.error("Error deleting lead:", err);
+    }
+  };
+
+  // EDIT LEAD
+  const startEdit = (lead) => {
+    setEditingLead(lead);
+  };
+
+  const handleEditChange = (e) => {
+    setEditingLead({
+      ...editingLead,
+      [e.target.name]: e.target.value,
     });
   };
 
-  const deleteLead = async (id) => {
-  await API.delete(`/leads/${id}`);
-  fetchLeads();
-};
+  const updateLead = async (e) => {
+    e.preventDefault();
 
-const startEdit = (lead) => {
-  setEditingLead(lead);
-};
+    try {
+      await API.put(`/leads/${editingLead._id}`, editingLead);
 
-const updateLead = async (e) => {
-  e.preventDefault();
+      setEditingLead(null);
 
-  await API.put(`/leads/${editingLead._id}`, editingLead);
+      fetchLeads();
+    } catch (err) {
+      console.error("Error updating lead:", err);
+    }
+  };
 
-  setEditingLead(null);
-  fetchLeads();
-};
+  // ---------------- NOTES ----------------
 
-const handleEditChange = (e) => {
-  setEditingLead({
-    ...editingLead,
-    [e.target.name]: e.target.value,
-  });
-};
+  const fetchNotes = async (lead) => {
+    setSelectedLead(lead._id);
+    setSelectedLeadData(lead);
 
-const fetchNotes = async (leadId) => {
-  const res = await API.get(`/notes/${leadId}`);
-  setNotes(res.data);
-  setSelectedLead(leadId);
-};
+    try {
+      const res = await API.get(`/notes/${lead._id}`);
 
-const addNote = async () => {
-  await API.post("/notes", {
-    leadId: selectedLead,
-    content: noteText,
-    createdBy: "admin",
-  });
+      setNotes(res.data);
 
-  setNoteText("");
-  fetchNotes(selectedLead);
-};
+      setTimeout(() => {
+        document
+          .getElementById("notes-section")
+          ?.scrollIntoView({ behavior: "smooth" });
+      }, 50);
+
+    } catch (err) {
+      console.error("Error fetching notes:", err);
+    }
+  };
+
+  const addNote = async () => {
+    if (!noteText.trim()) return;
+
+    try {
+      await API.post("/notes", {
+        leadId: selectedLead,
+        content: noteText,
+        createdBy: "admin",
+      });
+
+      setNoteText("");
+
+      fetchNotes(selectedLeadData);
+
+    } catch (err) {
+      console.error("Error adding note:", err);
+    }
+  };
 
   return (
     <div style={{ padding: "20px" }}>
       <h1>Leads</h1>
+
+      {/* FILTER */}
       <select
         value={statusFilter}
         onChange={(e) => setStatusFilter(e.target.value)}
-        >
+      >
         <option value="">All</option>
         <option value="New">New</option>
         <option value="Contacted">Contacted</option>
@@ -111,10 +162,11 @@ const addNote = async () => {
         <option value="Proposal Sent">Proposal Sent</option>
         <option value="Won">Won</option>
         <option value="Lost">Lost</option>
-        </select>
+      </select>
 
-        <br /><br />
+      <br /><br />
 
+      {/* CREATE LEAD */}
       <form onSubmit={createLead}>
         <input
           type="text"
@@ -201,50 +253,74 @@ const addNote = async () => {
 
         <br /><br />
 
-        <button type="submit">Create Lead</button>
+        <button type="submit">
+          Create Lead
+        </button>
       </form>
 
       <hr />
 
+      {/* EDIT FORM */}
       {editingLead && (
         <form onSubmit={updateLead}>
-            <h2>Edit Lead</h2>
+          <h2>Edit Lead</h2>
 
-            <input
+          <input
             name="name"
             value={editingLead.name}
             onChange={handleEditChange}
-            />
+          />
 
-            <input
+          <br /><br />
+
+          <input
             name="company"
             value={editingLead.company}
             onChange={handleEditChange}
-            />
+          />
 
-            <input
+          <br /><br />
+
+          <input
             name="email"
             value={editingLead.email}
             onChange={handleEditChange}
-            />
+          />
 
-            <input
+          <br /><br />
+
+          <input
             name="phone"
             value={editingLead.phone}
             onChange={handleEditChange}
-            />
+          />
 
-            <input
+          <br /><br />
+
+          <input
             name="dealValue"
             value={editingLead.dealValue}
             onChange={handleEditChange}
-            />
+          />
 
-            <button type="submit">Update</button>
-            <button onClick={() => setEditingLead(null)}>Cancel</button>
+          <br /><br />
+
+          <button type="submit">
+            Update
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setEditingLead(null)}
+          >
+            Cancel
+          </button>
         </form>
-        )}
+      )}
 
+      <hr />
+
+      {/* LEADS */}
       {leads.map((lead) => (
         <div
           key={lead._id}
@@ -255,18 +331,98 @@ const addNote = async () => {
           }}
         >
           <h3>{lead.name}</h3>
+
           <p>Company: {lead.company}</p>
+
           <p>Email: {lead.email}</p>
+
           <p>Status: {lead.status}</p>
+
           <p>Value: ${lead.dealValue}</p>
+
           <button onClick={() => deleteLead(lead._id)}>
             Delete
           </button>
+
           <button onClick={() => startEdit(lead)}>
             Edit
-            </button>
+          </button>
+
+          <button onClick={() => fetchNotes(lead)}>
+            Notes
+          </button>
         </div>
       ))}
+
+      {/* NOTES SECTION */}
+      {selectedLead && (
+        <div
+          id="notes-section"
+          style={{
+            border: "2px solid blue",
+            padding: "20px",
+            marginTop: "20px",
+          }}
+        >
+          <h2>
+            Notes for {selectedLeadData?.name}
+          </h2>
+
+          <p>
+            Company: {selectedLeadData?.company}
+          </p>
+
+          <p>
+            Status: {selectedLeadData?.status}
+          </p>
+
+          <input
+            type="text"
+            placeholder="Write a note"
+            value={noteText}
+            onChange={(e) => setNoteText(e.target.value)}
+          />
+
+          <button onClick={addNote}>
+            Add Note
+          </button>
+
+          <button
+            onClick={() => {
+              setSelectedLead(null);
+              setSelectedLeadData(null);
+              setNotes([]);
+            }}
+          >
+            Close Notes
+          </button>
+
+          <hr />
+
+          {notes.length === 0 && (
+            <p>No notes yet.</p>
+          )}
+
+          {notes.map((n) => (
+            <div
+              key={n._id}
+              style={{
+                border: "1px solid black",
+                padding: "10px",
+                marginTop: "10px",
+              }}
+            >
+              <strong>{n.createdBy}</strong>
+
+              <p>{n.content}</p>
+
+              <small>
+                {new Date(n.createdAt).toLocaleString()}
+              </small>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

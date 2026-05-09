@@ -5,6 +5,7 @@ import authRoutes from "./routes/authRoutes.js";
 import leadRoutes from "./routes/leadRoutes.js";
 import { connectDB } from "./config/db.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
+import notesRoutes from "./routes/notesRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -17,6 +18,8 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/leads", leadRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/notes", notesRoutes);
+
 
 app.get("/", (req, res) => {
   res.send("CRM API running");

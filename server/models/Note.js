@@ -16,9 +16,16 @@ const noteSchema = new mongoose.Schema(
     createdBy: {
       type: String,
       default: "admin"
+    },
+
+    createdAt: {
+      type: Date,
+      default: Date.now
     }
   },
   { timestamps: true }
+
+
 );
 
 export default mongoose.model("Note", noteSchema);
