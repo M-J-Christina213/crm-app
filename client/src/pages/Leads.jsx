@@ -24,6 +24,40 @@ function Leads() {
     dealValue: "",
   });
 
+  const inputStyle = {
+  padding: "12px",
+  borderRadius: "10px",
+  border: "1px solid #d1d5db",
+  width: "100%",
+};
+
+const primaryButton = {
+  background: "#2563eb",
+  color: "white",
+  border: "none",
+  padding: "10px 16px",
+  borderRadius: "10px",
+  cursor: "pointer",
+};
+
+const dangerButton = {
+  background: "#dc2626",
+  color: "white",
+  border: "none",
+  padding: "10px 16px",
+  borderRadius: "10px",
+  cursor: "pointer",
+};
+
+const secondaryButton = {
+  background: "#0f172a",
+  color: "white",
+  border: "none",
+  padding: "10px 16px",
+  borderRadius: "10px",
+  cursor: "pointer",
+};
+
   // FETCH LEADS
   useEffect(() => {
     fetchLeads();
@@ -147,15 +181,44 @@ function Leads() {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Leads</h1>
+  <div
+    style={{
+      minHeight: "100vh",
+      background: "#f4f7fb",
+      padding: "30px",
+      fontFamily: "Arial",
+    }}
+  >
+    <h1
+      style={{
+        fontSize: "32px",
+        marginBottom: "20px",
+        color: "#1e293b",
+      }}
+    >
+      CRM Lead Management
+    </h1>
 
-      {/* FILTER */}
+    {/* TOP BAR */}
+    <div
+      style={{
+        display: "flex",
+        gap: "15px",
+        marginBottom: "25px",
+        alignItems: "center",
+      }}
+    >
       <select
         value={statusFilter}
         onChange={(e) => setStatusFilter(e.target.value)}
+        style={{
+          padding: "10px",
+          borderRadius: "10px",
+          border: "1px solid #ccc",
+          width: "200px",
+        }}
       >
-        <option value="">All</option>
+        <option value="">All Leads</option>
         <option value="New">New</option>
         <option value="Contacted">Contacted</option>
         <option value="Qualified">Qualified</option>
@@ -163,267 +226,336 @@ function Leads() {
         <option value="Won">Won</option>
         <option value="Lost">Lost</option>
       </select>
+    </div>
 
-      <br /><br />
+    {/* CREATE LEAD CARD */}
+    <div
+      style={{
+        background: "white",
+        padding: "25px",
+        borderRadius: "18px",
+        boxShadow: "0 4px 15px rgba(0,0,0,0.08)",
+        marginBottom: "30px",
+      }}
+    >
+      <h2 style={{ marginBottom: "20px", color: "#0f172a" }}>
+        Create New Lead
+      </h2>
 
-      {/* CREATE LEAD */}
       <form onSubmit={createLead}>
-        <input
-          type="text"
-          name="name"
-          placeholder="Lead Name"
-          value={formData.name}
-          onChange={handleChange}
-        />
-
-        <br /><br />
-
-        <input
-          type="text"
-          name="company"
-          placeholder="Company"
-          value={formData.company}
-          onChange={handleChange}
-        />
-
-        <br /><br />
-
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-        />
-
-        <br /><br />
-
-        <input
-          type="text"
-          name="phone"
-          placeholder="Phone"
-          value={formData.phone}
-          onChange={handleChange}
-        />
-
-        <br /><br />
-
-        <input
-          type="text"
-          name="source"
-          placeholder="Lead Source"
-          value={formData.source}
-          onChange={handleChange}
-        />
-
-        <br /><br />
-
-        <input
-          type="text"
-          name="assignedTo"
-          placeholder="Assigned Salesperson"
-          value={formData.assignedTo}
-          onChange={handleChange}
-        />
-
-        <br /><br />
-
-        <select
-          name="status"
-          value={formData.status}
-          onChange={handleChange}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "15px",
+          }}
         >
-          <option>New</option>
-          <option>Contacted</option>
-          <option>Qualified</option>
-          <option>Proposal Sent</option>
-          <option>Won</option>
-          <option>Lost</option>
-        </select>
+          <input
+            type="text"
+            name="name"
+            placeholder="Lead Name"
+            value={formData.name}
+            onChange={handleChange}
+            style={inputStyle}
+          />
 
-        <br /><br />
+          <input
+            type="text"
+            name="company"
+            placeholder="Company"
+            value={formData.company}
+            onChange={handleChange}
+            style={inputStyle}
+          />
 
-        <input
-          type="number"
-          name="dealValue"
-          placeholder="Deal Value"
-          value={formData.dealValue}
-          onChange={handleChange}
-        />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+            style={inputStyle}
+          />
 
-        <br /><br />
+          <input
+            type="text"
+            name="phone"
+            placeholder="Phone"
+            value={formData.phone}
+            onChange={handleChange}
+            style={inputStyle}
+          />
 
-        <button type="submit">
+          <input
+            type="text"
+            name="source"
+            placeholder="Lead Source"
+            value={formData.source}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <input
+            type="text"
+            name="assignedTo"
+            placeholder="Assigned Salesperson"
+            value={formData.assignedTo}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <select
+            name="status"
+            value={formData.status}
+            onChange={handleChange}
+            style={inputStyle}
+          >
+            <option>New</option>
+            <option>Contacted</option>
+            <option>Qualified</option>
+            <option>Proposal Sent</option>
+            <option>Won</option>
+            <option>Lost</option>
+          </select>
+
+          <input
+            type="number"
+            name="dealValue"
+            placeholder="Deal Value"
+            value={formData.dealValue}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+        </div>
+
+        <button
+          type="submit"
+          style={{
+            marginTop: "20px",
+            background: "#2563eb",
+            color: "white",
+            border: "none",
+            padding: "12px 20px",
+            borderRadius: "10px",
+            cursor: "pointer",
+            fontWeight: "bold",
+          }}
+        >
           Create Lead
         </button>
       </form>
+    </div>
 
-      <hr />
+    {/* EDIT FORM */}
+    {editingLead && (
+      <div
+        style={{
+          background: "white",
+          padding: "25px",
+          borderRadius: "18px",
+          marginBottom: "30px",
+          boxShadow: "0 4px 15px rgba(0,0,0,0.08)",
+        }}
+      >
+        <h2>Edit Lead</h2>
 
-      {/* EDIT FORM */}
-      {editingLead && (
         <form onSubmit={updateLead}>
-          <h2>Edit Lead</h2>
-
-          <input
-            name="name"
-            value={editingLead.name}
-            onChange={handleEditChange}
-          />
-
-          <br /><br />
-
-          <input
-            name="company"
-            value={editingLead.company}
-            onChange={handleEditChange}
-          />
-
-          <br /><br />
-
-          <input
-            name="email"
-            value={editingLead.email}
-            onChange={handleEditChange}
-          />
-
-          <br /><br />
-
-          <input
-            name="phone"
-            value={editingLead.phone}
-            onChange={handleEditChange}
-          />
-
-          <br /><br />
-
-          <input
-            name="dealValue"
-            value={editingLead.dealValue}
-            onChange={handleEditChange}
-          />
-
-          <br /><br />
-
-          <button type="submit">
-            Update
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setEditingLead(null)}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "15px",
+            }}
           >
-            Cancel
-          </button>
+            <input
+              name="name"
+              value={editingLead.name}
+              onChange={handleEditChange}
+              style={inputStyle}
+            />
+
+            <input
+              name="company"
+              value={editingLead.company}
+              onChange={handleEditChange}
+              style={inputStyle}
+            />
+
+            <input
+              name="email"
+              value={editingLead.email}
+              onChange={handleEditChange}
+              style={inputStyle}
+            />
+
+            <input
+              name="phone"
+              value={editingLead.phone}
+              onChange={handleEditChange}
+              style={inputStyle}
+            />
+
+            <input
+              name="dealValue"
+              value={editingLead.dealValue}
+              onChange={handleEditChange}
+              style={inputStyle}
+            />
+          </div>
+
+          <div style={{ marginTop: "20px", display: "flex", gap: "10px" }}>
+            <button
+              type="submit"
+              style={primaryButton}
+            >
+              Update
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setEditingLead(null)}
+              style={dangerButton}
+            >
+              Cancel
+            </button>
+          </div>
         </form>
-      )}
+      </div>
+    )}
 
-      <hr />
-
-      {/* LEADS */}
+    {/* LEADS GRID */}
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+        gap: "20px",
+      }}
+    >
       {leads.map((lead) => (
         <div
           key={lead._id}
           style={{
-            border: "1px solid gray",
-            padding: "10px",
-            marginBottom: "10px",
-          }}
-        >
-          <h3>{lead.name}</h3>
-
-          <p>Company: {lead.company}</p>
-
-          <p>Email: {lead.email}</p>
-
-          <p>Status: {lead.status}</p>
-
-          <p>Value: ${lead.dealValue}</p>
-
-          <button onClick={() => deleteLead(lead._id)}>
-            Delete
-          </button>
-
-          <button onClick={() => startEdit(lead)}>
-            Edit
-          </button>
-
-          <button onClick={() => fetchNotes(lead)}>
-            Notes
-          </button>
-        </div>
-      ))}
-
-      {/* NOTES SECTION */}
-      {selectedLead && (
-        <div
-          id="notes-section"
-          style={{
-            border: "2px solid blue",
+            background: "white",
+            borderRadius: "18px",
             padding: "20px",
-            marginTop: "20px",
+            boxShadow: "0 4px 15px rgba(0,0,0,0.08)",
           }}
         >
-          <h2>
-            Notes for {selectedLeadData?.name}
+          <h2 style={{ color: "#0f172a" }}>
+            {lead.name}
           </h2>
 
-          <p>
-            Company: {selectedLeadData?.company}
-          </p>
+          <p><strong>Company:</strong> {lead.company}</p>
+          <p><strong>Email:</strong> {lead.email}</p>
+          <p><strong>Status:</strong> {lead.status}</p>
+          <p><strong>Value:</strong> ${lead.dealValue}</p>
 
-          <p>
-            Status: {selectedLeadData?.status}
-          </p>
-
-          <input
-            type="text"
-            placeholder="Write a note"
-            value={noteText}
-            onChange={(e) => setNoteText(e.target.value)}
-          />
-
-          <button onClick={addNote}>
-            Add Note
-          </button>
-
-          <button
-            onClick={() => {
-              setSelectedLead(null);
-              setSelectedLeadData(null);
-              setNotes([]);
+          <div
+            style={{
+              display: "flex",
+              gap: "10px",
+              marginTop: "15px",
+              flexWrap: "wrap",
             }}
           >
-            Close Notes
+            <button
+              onClick={() => startEdit(lead)}
+              style={primaryButton}
+            >
+              Edit
+            </button>
+
+            <button
+              onClick={() => deleteLead(lead._id)}
+              style={dangerButton}
+            >
+              Delete
+            </button>
+
+            <button
+              onClick={() => fetchNotes(lead)}
+              style={secondaryButton}
+            >
+              Notes
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    {/* NOTES PANEL */}
+    {selectedLead && (
+      <div
+        id="notes-section"
+        style={{
+          background: "white",
+          padding: "25px",
+          borderRadius: "18px",
+          marginTop: "35px",
+          boxShadow: "0 4px 15px rgba(0,0,0,0.08)",
+        }}
+      >
+        <h2>
+          Notes — {selectedLeadData?.name}
+        </h2>
+
+        <p>
+          <strong>Company:</strong> {selectedLeadData?.company}
+        </p>
+
+        <div
+          style={{
+            display: "flex",
+            gap: "10px",
+            marginTop: "15px",
+          }}
+        >
+          <input
+            type="text"
+            placeholder="Write a note..."
+            value={noteText}
+            onChange={(e) => setNoteText(e.target.value)}
+            style={{
+              ...inputStyle,
+              flex: 1,
+            }}
+          />
+
+          <button
+            onClick={addNote}
+            style={primaryButton}
+          >
+            Add Note
           </button>
+        </div>
 
-          <hr />
-
-          {notes.length === 0 && (
-            <p>No notes yet.</p>
-          )}
-
+        <div style={{ marginTop: "20px" }}>
           {notes.map((n) => (
             <div
               key={n._id}
               style={{
-                border: "1px solid black",
-                padding: "10px",
-                marginTop: "10px",
+                background: "#f8fafc",
+                padding: "15px",
+                borderRadius: "12px",
+                marginBottom: "12px",
               }}
             >
               <strong>{n.createdBy}</strong>
 
-              <p>{n.content}</p>
+              <p style={{ marginTop: "5px" }}>
+                {n.content}
+              </p>
 
-              <small>
+              <small style={{ color: "gray" }}>
                 {new Date(n.createdAt).toLocaleString()}
               </small>
             </div>
           ))}
         </div>
-      )}
-    </div>
+      </div>
+    )}
+  </div>
+
   );
 }
 
