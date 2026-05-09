@@ -5,6 +5,9 @@ function Leads() {
   const [leads, setLeads] = useState([]);
   const [statusFilter, setStatusFilter] = useState("");
   const [editingLead, setEditingLead] = useState(null);
+  const [notes, setNotes] = useState([]);
+  const [noteText, setNoteText] = useState("");
+  const [selectedLead, setSelectedLead] = useState(null);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -75,6 +78,23 @@ const handleEditChange = (e) => {
     ...editingLead,
     [e.target.name]: e.target.value,
   });
+};
+
+const fetchNotes = async (leadId) => {
+  const res = await API.get(`/notes/${leadId}`);
+  setNotes(res.data);
+  setSelectedLead(leadId);
+};
+
+const addNote = async () => {
+  await API.post("/notes", {
+    leadId: selectedLead,
+    content: noteText,
+    createdBy: "admin",
+  });
+
+  setNoteText("");
+  fetchNotes(selectedLead);
 };
 
   return (
