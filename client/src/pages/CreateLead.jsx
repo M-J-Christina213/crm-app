@@ -1,8 +1,9 @@
 import { useState } from "react";
 import API from "../services/api";
+import Navbar from "../components/Navbar";
+import { pageStyle, card, input, buttonPrimary } from "../styles/ui";
 
 export default function CreateLead() {
-
   const [formData, setFormData] = useState({
     name: "",
     company: "",
@@ -11,125 +12,44 @@ export default function CreateLead() {
     source: "",
     assignedTo: "",
     status: "New",
-    dealValue: ""
+    dealValue: "",
   });
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
+  const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    try {
-      await API.post("/leads", formData);
-
-      alert("Lead created successfully!");
-
-      setFormData({
-        name: "",
-        company: "",
-        email: "",
-        phone: "",
-        source: "",
-        assignedTo: "",
-        status: "New",
-        dealValue: ""
-      });
-
-    } catch (err) {
-      console.log(err);
-      alert("Error creating lead");
-    }
+    await API.post("/leads", formData);
+    alert("Lead created!");
   };
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2>Create Lead</h2>
+    <>
+      <Navbar />
 
-      <form onSubmit={handleSubmit}>
+      <div style={pageStyle}>
+        <h1>Create Lead</h1>
 
-        <input
-          name="name"
-          placeholder="Lead Name"
-          value={formData.name}
-          onChange={handleChange}
-        />
-        <br /><br />
+        <div style={{ ...card, maxWidth: "600px" }}>
+          <form onSubmit={handleSubmit}>
+            {Object.keys(formData).map((key) => (
+              <input
+                key={key}
+                name={key}
+                placeholder={key}
+                value={formData[key]}
+                onChange={handleChange}
+                style={{ ...input, marginBottom: "10px" }}
+              />
+            ))}
 
-        <input
-          name="company"
-          placeholder="Company"
-          value={formData.company}
-          onChange={handleChange}
-        />
-        <br /><br />
-
-        <input
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-        />
-        <br /><br />
-
-        <input
-          name="phone"
-          placeholder="Phone"
-          value={formData.phone}
-          onChange={handleChange}
-        />
-        <br /><br />
-
-        <input
-          name="source"
-          placeholder="Lead Source"
-          value={formData.source}
-          onChange={handleChange}
-        />
-        <br /><br />
-
-        <input
-          name="assignedTo"
-          placeholder="Assigned Salesperson"
-          value={formData.assignedTo}
-          onChange={handleChange}
-        />
-        <br /><br />
-
-        <select
-          name="status"
-          value={formData.status}
-          onChange={handleChange}
-        >
-          <option value="New">New</option>
-          <option value="Contacted">Contacted</option>
-          <option value="Qualified">Qualified</option>
-          <option value="Proposal Sent">Proposal Sent</option>
-          <option value="Won">Won</option>
-          <option value="Lost">Lost</option>
-        </select>
-
-        <br /><br />
-
-        <input
-          type="number"
-          name="dealValue"
-          placeholder="Deal Value"
-          value={formData.dealValue}
-          onChange={handleChange}
-        />
-
-        <br /><br />
-
-        <button type="submit">
-          Create Lead
-        </button>
-
-      </form>
-    </div>
+            <button style={buttonPrimary} type="submit">
+              Create Lead
+            </button>
+          </form>
+        </div>
+      </div>
+    </>
   );
 }

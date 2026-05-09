@@ -1,38 +1,47 @@
 import { useEffect, useState } from "react";
 import API from "../services/api";
 import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import { pageStyle, card, buttonPrimary } from "../styles/ui";
 
 export default function Dashboard() {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const res = await API.get("/dashboard");
-      setData(res.data);
-    };
-
-    fetchData();
+    API.get("/dashboard").then((res) => setData(res.data));
   }, []);
 
-  if (!data) return <p>Loading...</p>;
+  if (!data) return <p style={{ padding: 20 }}>Loading...</p>;
 
   return (
-    <div style={{ padding: 20 }}>
-      <h1>CRM Dashboard</h1>
+    <>
+      <Navbar />
 
-        <Link to="/leads">
-            <button>Go To Leads</button>
-        </Link>
+      <div style={pageStyle}>
+        <h1>Dashboard Overview</h1>
 
-      <div>
-        <p>Total Leads: {data.totalLeads}</p>
-        <p>New Leads: {data.newLeads}</p>
-        <p>Qualified: {data.qualifiedLeads}</p>
-        <p>Won: {data.wonLeads}</p>
-        <p>Lost: {data.lostLeads}</p>
-        <p>Total Value: {data.totalDealValue}</p>
-        <p>Won Value: {data.wonDealValue}</p>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))",
+            gap: "15px",
+          }}
+        >
+          <div style={card}>Total Leads: {data.totalLeads}</div>
+          <div style={card}>New: {data.newLeads}</div>
+          <div style={card}>Qualified: {data.qualifiedLeads}</div>
+          <div style={card}>Won: {data.wonLeads}</div>
+          <div style={card}>Lost: {data.lostLeads}</div>
+          <div style={card}>Total Value: ${data.totalDealValue}</div>
+          <div style={card}>Won Value: ${data.wonDealValue}</div>
+        </div>
+
+        <div style={{ marginTop: "20px" }}>
+          <Link to="/leads">
+            <button style={buttonPrimary}>Go To Leads</button>
+          </Link>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

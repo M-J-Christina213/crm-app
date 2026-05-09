@@ -1,6 +1,7 @@
 import { useState } from "react";
 import API from "../services/api";
 import { useNavigate } from "react-router-dom";
+import { pageStyle, card, input, buttonPrimary } from "../styles/ui";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -10,42 +11,47 @@ export default function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    try {
-      const res = await API.post("/auth/login", {
-        email,
-        password,
-      });
+    const res = await API.post("/auth/login", { email, password });
 
-      localStorage.setItem("token", res.data.token);
-      alert("Login successful!");
-      navigate("/app");
-    } catch (err) {
-      alert("Login failed");
-    }
+    localStorage.setItem("token", res.data.token);
+    navigate("/app");
   };
 
   return (
-    <div style={{ padding: 50 }}>
-      <h2>CRM Login</h2>
+    <div
+      style={{
+        ...pageStyle,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <div style={{ ...card, width: "350px" }}>
+        <h2>CRM Login</h2>
 
-      <form onSubmit={handleLogin}>
-        <input
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <br /><br />
+        <form onSubmit={handleLogin}>
+          <input
+            style={input}
+            placeholder="Email"
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <br /><br />
+          <br /><br />
 
-        <button type="submit">Login</button>
-      </form>
+          <input
+            style={input}
+            type="password"
+            placeholder="Password"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
+          <br /><br />
+
+          <button style={buttonPrimary} type="submit">
+            Login
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
