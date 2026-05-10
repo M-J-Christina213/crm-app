@@ -89,7 +89,7 @@ export default function Login() {
           </p>
         </div>
 
-        <p style={S.footer}>© 2025 PipeFlow · Lead management for high-velocity teams</p>
+        <p style={S.footer}>© 2026 PipeFlow · Lead management for high-velocity teams</p>
       </div>
     </div>
   );
